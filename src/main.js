@@ -1,10 +1,8 @@
 const readline = require('readline');
 
-
-
 const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
+    input: process.stdin,
+    output: process.stdout,
 });
 
 function pergunta(questao) {
@@ -16,32 +14,32 @@ function pergunta(questao) {
 }
 
 function validarNumero(numero) {
-    const num = parseFloat(numero);
-    return !isNaN(num) && num >= 0;
-   
+    const num = parseInt(numero, 10);
+    return !isNaN(num) && num > 0;
 }
 
-function medalhaDeAcordoComPosicao(numero) {
-    const posicoes = ['ouro', 'prata', 'bronze', 'nenhuma'];
-    if (numero >= 4 ) {
-        return posicoes[3];
+function mensagemMedalha(posicao) {
+    const medalhas = ['ouro', 'prata', 'bronze'];
+    
+    if (posicao >= 1 && posicao <= 3) {
+        return `Parabéns, sua medalha foi de ${medalhas[posicao - 1]}.`;
     } else {
-        const posicao = numero - 1;
-        return posicoes[posicao];
+        return "Sua posição não recebe medalha. Tente novamente!";
     }
 }
 
 async function retornarMedalha() {
     const numeroDoUsuario = await pergunta('Digite a sua posição na competição: ');
+    
     if (validarNumero(numeroDoUsuario)) {
-        const medalha = medalhaDeAcordoComPosicao(numeroDoUsuario);
-        console.log("Parabéns, sua medalha foi de " + medalha);
-            rl.close();
+        const posicao = parseInt(numeroDoUsuario, 10);
+        const mensagem = mensagemMedalha(posicao);
+        console.log(mensagem);
+        rl.close();
     } else {
         console.log('Digite uma posição válida.');
-        retornarMedalha();
+        return retornarMedalha();
     }
 }
-
 
 retornarMedalha();
