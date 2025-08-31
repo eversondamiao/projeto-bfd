@@ -1,45 +1,45 @@
-const readline = require('readline');
+class ContaBancaria {
+    constructor(titular, saldo) {
+        this.titular = titular;
+        this.saldo = saldo;
+    }
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-});
+    formatarValor(valor) {
+        return `R$${valor.toFixed(2)}`;
+    }
 
-function pergunta(questao) {
-    return new Promise(resolve => {
-        rl.question(questao, (resposta) => {
-            resolve(resposta);
-        });
-    });
-}
+    depositar(valor) {
+        if (valor > 0) {
+            this.saldo += valor;
+            return `Depósito de ${this.formatarValor(valor)} realizado. Novo saldo: ${this.formatarValor(this.saldo)}.`;
+        } else {
+            return "Valor de depósito inválido.";
+        }
+    }
 
-function validarNumero(numero) {
-    const num = parseInt(numero, 10);
-    return !isNaN(num) && num > 0;
-}
+    sacar(valor) {
+        if (valor > 0 && valor <= this.saldo) {
+            this.saldo -= valor;
+            return `Saque de ${this.formatarValor(valor)} realizado. Novo saldo: ${this.formatarValor(this.saldo)}.`;
+        } else if (valor > this.saldo) {
+            return "Saldo insuficiente para saque.";
+        } else {
+            return "Valor de saque inválido.";
+        }
+    }
 
-function mensagemMedalha(posicao) {
-    const medalhas = ['ouro', 'prata', 'bronze'];
-    
-    if (posicao >= 1 && posicao <= 3) {
-        return `Parabéns, sua medalha foi de ${medalhas[posicao - 1]}.`;
-    } else {
-        return "Sua posição não recebe medalha. Tente novamente!";
+    consultarSaldo() {
+        return `Saldo atual de ${this.titular}: ${this.formatarValor(this.saldo)}.`;
     }
 }
 
-async function retornarMedalha() {
-    const numeroDoUsuario = await pergunta('Digite a sua posição na competição: ');
-    
-    if (validarNumero(numeroDoUsuario)) {
-        const posicao = parseInt(numeroDoUsuario, 10);
-        const mensagem = mensagemMedalha(posicao);
-        console.log(mensagem);
-        rl.close();
-    } else {
-        console.log('Digite uma posição válida.');
-        return retornarMedalha();
-    }
-}
 
-retornarMedalha();
+const conta = new ContaBancaria("Everson", 1000);
+
+console.log(conta.depositar(500));
+
+console.log(conta.sacar(200));
+
+console.log(conta.consultarSaldo());
+
+console.log(conta);
